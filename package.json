@@ -25,12 +25,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/weirdscience/mcp-gitlab.git"
+    "url": "git+https://github.com/mikedotJS/mcp-gitlab.git"
   },
   "bugs": {
-    "url": "https://github.com/weirdscience/mcp-gitlab/issues"
+    "url": "https://github.com/mikedotJS/mcp-gitlab/issues"
   },
-  "homepage": "https://github.com/weirdscience/mcp-gitlab#readme",
+  "homepage": "https://github.com/mikedotJS/mcp-gitlab#readme",
   "engines": {
     "node": ">=18.0.0"
   },
