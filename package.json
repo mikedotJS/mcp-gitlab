@@ -1,0 +1,63 @@
+{
+  "name": "@weirdscience/mcp-gitlab",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MCP server exposing GitLab tools via glab CLI",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-gitlab": "dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "gitlab",
+    "glab",
+    "cli",
+    "ai",
+    "assistant"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weirdscience/mcp-gitlab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/weirdscience/mcp-gitlab/issues"
+  },
+  "homepage": "https://github.com/weirdscience/mcp-gitlab#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "check": "node dist/index.js --self-test",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "tsx": "^4.9.3",
+    "typescript": "^5.5.4"
+  }
+}
