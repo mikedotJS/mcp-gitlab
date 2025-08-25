@@ -141,13 +141,13 @@ server.registerTool(
 
 /**
  * Tool: gitlab.mr.create
- * Non-interactive MR creation via `glab mr create`.
+ * Create merge requests via GitLab REST API (avoids git repository dependency).
  */
 server.registerTool(
   'gitlab.mr.create',
   {
     title: 'Create a merge request',
-    description: 'Create an MR using glab mr create in non-interactive mode',
+    description: 'Create an MR using GitLab REST API via glab api',
     inputSchema: {
       project: z.string(),
       sourceBranch: z.string(),
@@ -169,41 +169,33 @@ server.registerTool(
     labels,
     assignees,
   }) => {
-    const args = [
-      'mr',
-      'create',
-      '-R',
-      project,
-      '--title',
-      title,
-      '--source-branch',
-      sourceBranch,
-      '--target-branch',
-      targetBranch,
-      '--yes',
-    ];
-    if (description) args.push('--description', description);
-    if (draft) args.push('--draft');
-    if (labels) args.push('--label', labels);
-    if (assignees) args.push('--assignee', assignees);
+    const id = projectIdOrEncodedPath(project);
+    const path = `projects/${id}/merge_requests`;
+    
+    const fields: Record<string, any> = {
+      source_branch: sourceBranch,
+      target_branch: targetBranch,
+      title: title,
+    };
+    
+    if (description) fields.description = description;
+    if (draft) fields.title = `Draft: ${title}`;
+    if (labels) fields.labels = labels;
+    if (assignees) fields.assignee_ids = assignees.split(',').map(a => a.trim());
 
-    // `glab mr create` prints human text; fetch MR JSON afterwards:
-    const { out } = await runGlab(args);
-    // Try to grab the MR IID from output; else fall back to listing newest:
-    let iid: string | undefined;
-    const m = out.match(/!\d+/);
-    if (m) iid = m[0].replace('!', '');
-    const mrJson = await runGlabJson([
-      'mr',
-      'view',
-      '-R',
-      project,
-      ...(iid ? [iid] : []),
-      '--output',
-      'json',
+    const data = await runGlabJson([
+      'api',
+      '--method',
+      'POST',
+      path,
+      ...Object.entries(fields).flatMap(([k, v]) => [
+        '-F',
+        `${k}=${typeof v === 'string' ? v : JSON.stringify(v)}`
+      ])
     ]);
+    
     return {
-      content: [{ type: 'text', text: JSON.stringify(mrJson, null, 2) }],
+      content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
     };
   }
 );
