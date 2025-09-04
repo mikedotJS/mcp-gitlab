@@ -51,7 +51,7 @@ const server = new McpServer({ name: 'gitlab-glab', version: '0.1.0' });
  * Return glab version string (sanity + debug).
  */
 server.registerTool(
-  'glab.version',
+  'glab_version',
   {
     title: 'Get glab version',
     description: "Returns 'glab --version' text to verify CLI presence",
@@ -68,7 +68,7 @@ server.registerTool(
  * Wraps `glab issue list` with JSON output & pagination.
  */
 server.registerTool(
-  'gitlab.issues.list',
+  'gitlab_issues_list',
   {
     title: 'List GitLab issues',
     description: 'List issues for a project using glab issue list',
@@ -118,7 +118,7 @@ server.registerTool(
  * Wraps `glab mr list` with JSON output.
  */
 server.registerTool(
-  'gitlab.mrs.list',
+  'gitlab_mrs_list',
   {
     title: 'List merge requests',
     description: 'List MRs for a project using glab mr list',
@@ -144,7 +144,7 @@ server.registerTool(
  * Create merge requests via GitLab REST API (avoids git repository dependency).
  */
 server.registerTool(
-  'gitlab.mr.create',
+  'gitlab_mr_create',
   {
     title: 'Create a merge request',
     description: 'Create an MR using GitLab REST API via glab api',
@@ -171,17 +171,18 @@ server.registerTool(
   }) => {
     const id = projectIdOrEncodedPath(project);
     const path = `projects/${id}/merge_requests`;
-    
+
     const fields: Record<string, any> = {
       source_branch: sourceBranch,
       target_branch: targetBranch,
       title: title,
     };
-    
+
     if (description) fields.description = description;
     if (draft) fields.title = `Draft: ${title}`;
     if (labels) fields.labels = labels;
-    if (assignees) fields.assignee_ids = assignees.split(',').map(a => a.trim());
+    if (assignees)
+      fields.assignee_ids = assignees.split(',').map((a) => a.trim());
 
     const data = await runGlabJson([
       'api',
@@ -190,10 +191,10 @@ server.registerTool(
       path,
       ...Object.entries(fields).flatMap(([k, v]) => [
         '-F',
-        `${k}=${typeof v === 'string' ? v : JSON.stringify(v)}`
-      ])
+        `${k}=${typeof v === 'string' ? v : JSON.stringify(v)}`,
+      ]),
     ]);
-    
+
     return {
       content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
     };
@@ -205,7 +206,7 @@ server.registerTool(
  * Uses REST via `glab api` for consistent JSON.
  */
 server.registerTool(
-  'gitlab.pipelines.list',
+  'gitlab_pipelines_list',
   {
     title: 'List pipelines',
     description:
@@ -232,7 +233,7 @@ server.registerTool(
  * Low-level escape hatch to call any GitLab REST endpoint through `glab api`.
  */
 server.registerTool(
-  'gitlab.api',
+  'gitlab_api',
   {
     title: 'Raw GitLab API via glab',
     description:
