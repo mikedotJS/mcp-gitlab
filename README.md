@@ -129,7 +129,7 @@ After configuration, you can verify the server is working by:
 
 1. Opening Cursor's Command Palette
 2. Running "MCP: List Available Tools"
-3. You should see tools like `gitlab.issues.list`, `gitlab.mrs.list`, etc.
+3. You should see tools like `gitlab_issues_list`, `gitlab_mrs_list`, etc.
 
 ### Usage in Cursor
 
@@ -151,25 +151,25 @@ Cursor will automatically use the appropriate MCP tools to fulfill these request
 
 ## Available Tools
 
-### `gitlab.issues.list`
+### `gitlab_issues_list`
 List issues for a project.
 
 **Parameters:**
 - `project` (string): Project path or numeric ID (e.g., `'gitlab-org/cli'`)
-- `state` (optional): Issue state (`'opened'`, `'closed'`, `'all'`)
+- `state` (optional): Issue state (`'opened'`, `'closed'`, `'all'`) - default: `'opened'`
 - `labels` (optional): Comma-separated label names
 - `assignee` (optional): Assignee username
 
-### `gitlab.mrs.list`
+### `gitlab_mrs_list`
 List merge requests for a project.
 
 **Parameters:**
 - `project` (string): Project path or numeric ID
-- `state` (optional): MR state (`'opened'`, `'merged'`, `'closed'`, `'all'`)
+- `state` (optional): MR state (`'opened'`, `'merged'`, `'closed'`, `'all'`) - default: `'opened'`
 - `labels` (optional): Comma-separated label names
-- `draft` (optional): Filter for draft MRs
+- `draft` (optional): Filter for draft MRs (boolean)
 
-### `gitlab.mr.create`
+### `gitlab_mr_create`
 Create a new merge request.
 
 **Parameters:**
@@ -177,12 +177,12 @@ Create a new merge request.
 - `sourceBranch` (string): Source branch name
 - `targetBranch` (string): Target branch name
 - `title` (string): MR title
-- `description` (optional): MR description
-- `draft` (optional): Create as draft MR
+- `description` (optional): MR description - default: `''`
+- `draft` (optional): Create as draft MR (boolean) - default: `false`
 - `labels` (optional): Comma-separated labels
 - `assignees` (optional): Comma-separated assignee usernames
 
-### `gitlab.pipelines.list`
+### `gitlab_pipelines_list`
 List pipelines for a project.
 
 **Parameters:**
@@ -191,16 +191,16 @@ List pipelines for a project.
 - `perPage` (optional): Items per page (default: 50, max: 100)
 - `status` (optional): Pipeline status filter
 
-### `gitlab.api`
+### `gitlab_api`
 Low-level access to GitLab REST API.
 
 **Parameters:**
-- `method` (optional): HTTP method (`'GET'`, `'POST'`, `'PUT'`, `'PATCH'`, `'DELETE'`)
+- `method` (optional): HTTP method (`'GET'`, `'POST'`, `'PUT'`, `'PATCH'`, `'DELETE'`) - default: `'GET'`
 - `path` (string): API path below `/api/v4`
-- `fields` (optional): Request body fields
-- `headers` (optional): Custom headers
+- `fields` (optional): Request body fields (object)
+- `headers` (optional): Custom headers (object)
 
-### `glab.version`
+### `glab_version`
 Get the installed `glab` CLI version.
 
 ## Usage Examples
@@ -208,7 +208,7 @@ Get the installed `glab` CLI version.
 ### List Open Issues
 ```json
 {
-  "tool": "gitlab.issues.list",
+  "tool": "gitlab_issues_list",
   "arguments": {
     "project": "gitlab-org/cli",
     "state": "opened"
@@ -219,7 +219,7 @@ Get the installed `glab` CLI version.
 ### Create Merge Request
 ```json
 {
-  "tool": "gitlab.mr.create",
+  "tool": "gitlab_mr_create",
   "arguments": {
     "project": "my-group/my-project",
     "sourceBranch": "feature/new-feature",
@@ -234,7 +234,7 @@ Get the installed `glab` CLI version.
 ### Get Project Pipelines
 ```json
 {
-  "tool": "gitlab.pipelines.list",
+  "tool": "gitlab_pipelines_list",
   "arguments": {
     "project": "my-group/my-project",
     "perPage": 10,

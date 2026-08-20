@@ -5,7 +5,6 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 
-// ---------- helpers ----------
 function run(
   cmd: string,
   args: string[],
@@ -34,20 +33,17 @@ async function runGlabJson(args: string[]) {
   try {
     return JSON.parse(out);
   } catch {
-    // Some `glab` subcommands (e.g. `api`) already emit JSON; others need '--output json'.
     return JSON.parse(out.trim());
   }
 }
-// Accept either numeric ID or path like "group/subgroup/project"
 function projectIdOrEncodedPath(input: string): string {
   return /^\d+$/.test(input) ? input : encodeURIComponent(input);
 }
 
-// ---------- MCP server ----------
 const server = new McpServer({ name: 'gitlab-glab', version: '0.1.0' });
 
 /**
- * Tool: glab.version
+ * Tool: glab_version
  * Return glab version string (sanity + debug).
  */
 server.registerTool(
@@ -64,7 +60,7 @@ server.registerTool(
 );
 
 /**
- * Tool: gitlab.issues.list
+ * Tool: gitlab_issues_list
  * Wraps `glab issue list` with JSON output & pagination.
  */
 server.registerTool(
@@ -93,7 +89,7 @@ server.registerTool(
       '100',
     ];
     if (state === 'closed') args.push('--closed');
-    if (state === 'all') args.push('--all'); // glab flag to include all
+    if (state === 'all') args.push('--all');
     if (labels) args.push('--label', labels);
     if (assignee) args.push('--assignee', assignee);
 
@@ -114,7 +110,7 @@ server.registerTool(
 );
 
 /**
- * Tool: gitlab.mrs.list
+ * Tool: gitlab_mrs_list
  * Wraps `glab mr list` with JSON output.
  */
 server.registerTool(
@@ -140,7 +136,7 @@ server.registerTool(
 );
 
 /**
- * Tool: gitlab.mr.create
+ * Tool: gitlab_mr_create
  * Create merge requests via GitLab REST API (avoids git repository dependency).
  */
 server.registerTool(
@@ -202,7 +198,7 @@ server.registerTool(
 );
 
 /**
- * Tool: gitlab.pipelines.list
+ * Tool: gitlab_pipelines_list
  * Uses REST via `glab api` for consistent JSON.
  */
 server.registerTool(
@@ -229,7 +225,7 @@ server.registerTool(
 );
 
 /**
- * Tool: gitlab.api
+ * Tool: gitlab_api
  * Low-level escape hatch to call any GitLab REST endpoint through `glab api`.
  */
 server.registerTool(
@@ -265,7 +261,6 @@ server.registerTool(
   }
 );
 
-// Entrypoint
 async function main() {
   if (process.argv.includes('--self-test')) {
     const ver = await runGlab(['--version']);

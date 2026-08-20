@@ -93,3 +93,8 @@ jspm_packages/
 
 # TernJS port file
 .tern-port
+.env.*
+*.pem
+*.p12
+!.env.example
+node_modules
